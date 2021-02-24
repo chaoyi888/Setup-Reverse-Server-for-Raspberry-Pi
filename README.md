@@ -1,1 +1,62 @@
 # Setup-Reverse-Server-for-Raspberry-Pi
+
+The followin steps are to create a relay service from decentral units to one central  unit. So that you can access the remote raspberry pi (not in the same LAN network) via a central server by SSH instead of using Teamviewer or VNC Server.
+
+**Note: the condition is: **
+1. the central server needs to have a public IP address and can be accessable via SSH from internet.
+2. The Remote Raspberry Pi needs to have internet access via a network (WiFi or fixed line)
+
+## setup keypair at remote station (the Raspberry Pi at remote network)
+  1. Create key pair using the following command:
+  ssh-keygen -t rsa -b 4096
+  2. use empty pass phrases.
+  3. copy the public key to the central server under the username which you are using to login, e.g.:
+     /home/pi/.ssh/authorized_keys
+
+## setup a user and keypair at central server (e.g. a server on AWS which has public IP address)
+**Note: if you can already login to the central server via SSH by using your own public key, this step might not be necessary.**
+  1. Craete a new user if you want to use this user to login. In the case for Eindhoven, the username is EC2-user which is already configured at the central server on AWS. 
+      sudo adduser newuser
+  2. setup a key pair for this user
+      ssh-keygen -t rsa -b 4096
+  3. use empty passphrases
+  4. copy the public key of this user to the file `/home/newuser/.ssh/authorized_keys`. You might also want to use an oher use name :)
+
+## setup service file for callback service to central service at Raspberry Pi
+  1. create service file `/etc/systemd/system/ssh-relay.service` with following content (but change the port number 2200 to a unique port):
+[Unit]
+Description=Enable relay from central location
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/ssh -l Username_On_Central_Server Public_IP_Central_Server -R 2001:localhost:22 -L 8086:localhost:8086 -p22 -N -v -i /home/pi/.ssh/id_rsa(the location of your private key on the raspberry pi) -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no
+
+[Install]
+WantedBy=multi-user.target
+
+  **note: please be carefully of the username, IP of the central server. Also the port number needs to be unique, e.g. 2001**
+
+## Afterwards, run the following commands on your raspberry Pi
+sudo systemctl daemon-reload
+sudo systemctl enable ssh-relay
+sudo systemctl start ssh-relay
+
+make sure that for every remote unit you use a different port. In above example it is 2200. You can increment this for each new unit. Please keep an administration on this!!
+
+## testing on the remote raspberry Pi
+look at the logfile of the remote unit to see if everything is working:
+
+journalctl -f
+
+## login to the raspberry Pi via Central server
+  1. login via SSH to the central server
+  2. When you log in from the central server to the remote unit use (change the port number to the one choosen before):
+      ssh username_on_your_Pi@localhost -p2001
+  3. then you should be able to login to the remote raspberry Pi via a central server without using Teamviewer or VNC_Server. 
+  4. But it's still good to have Teamviewer and VNC_Server in case of urgency.
+
+
+
+also please change the username to an appropiate user.
