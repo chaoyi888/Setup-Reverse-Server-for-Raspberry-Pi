@@ -58,6 +58,18 @@ journalctl -f
   3. then you should be able to login to the remote raspberry Pi via a central server without using Teamviewer or VNC_Server. 
   4. But it's still good to have Teamviewer and VNC_Server in case of urgency.
 
-
-
 also please change the username to an appropiate user.
+
+## The SSH tunnel on the remote Raspberry Pi is always hanging there after a certain minutes inactive. The following steps can be taken so that the tunnel won't hang there 
+## anymore.
+  1. In /etc/ssh/ssh_config, append the following two lines at the last. 
+    @ sudo nano /etc/ssh/ssh_config
+    @ sudo /etc/init.d/ssh restart # restart 
+    ServerAliveInterval 60
+    ServerAliveCountMax 10
+  2. In /etc/ssh/sshd_config, uncomment the following lines:
+    ClientAliveInterval 60
+    ClientAliveCountMax 10
+    TCPKeepAlive yes
+    Close and save the file, then restart sshd, e.g.:/etc/init.d/ssh restart or: service sshd restart 
+  3. In my case, the SSH tunnel is never hanging there anymore. The reverse SSH connection from central server (AWS server) to the remote Raspberry Pi is always alive. 
