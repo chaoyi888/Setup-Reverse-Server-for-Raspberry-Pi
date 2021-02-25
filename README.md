@@ -60,7 +60,7 @@ journalctl -f
 
 also please change the username to an appropiate user.
 
-## The SSH tunnel on the remote Raspberry Pi is always hanging there after a certain minutes inactive. The following steps can be taken so that the tunnel won't hang there 
+## The SSH tunnel on the remote Raspberry Pi is always hanging there after a certain minutes inactivity. The following steps can be taken so that the tunnel won't hang there 
 ## anymore.
   1. In /etc/ssh/ssh_config, append the following two lines at the last. 
     @ sudo nano /etc/ssh/ssh_config
