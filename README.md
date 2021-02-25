@@ -76,7 +76,7 @@ also please change the username to an appropiate user.
 
 ## For the remote connection, there is always some unexpected behavior happening. So it's better that we define a crontab job to reboot the Pi every day at a certain time. 
 ## I have added the following lines in the /etc/crontab. 
-    00 20 * * * root reboot
-    03 20 * * * root systemctl daemon-reload
-    04 20 * * * root systemctl enable ssh-relay
-    05 20 * * * root systemctl start ssh-relay
+    00 00 * * * root reboot                     #Every day at 00:00, Pi will be reboot
+    03 00 * * * root systemctl daemon-reload    #Every day at 00:03. Daemon will be reloaded
+    04 00 * * * root systemctl enable ssh-relay #Every day at 00:04, sudo systemctl enable ssh-relay will be executed
+    05 00 * * * root systemctl start ssh-relay  #Every day at 00:05, sudo systemctl start ssh-relay will be excuted
