@@ -25,17 +25,17 @@ The followin steps are to create a relay service from decentral units to one cen
 ## setup service file for callback service to central service at Raspberry Pi
   1. create service file `/etc/systemd/system/ssh-relay.service` with following content (but change the port number 2200 to a unique port):
 
-[Unit]
-Description=Enable relay from central location
-After=network-online.target
-Wants=network-online.target
+  [Unit]
+  Description=Enable relay from central location
+  After=network-online.target
+  Wants=network-online.target
 
-[Service]
-Type=simple
-ExecStart=/usr/bin/ssh -l Username_On_Central_Server Public_IP_Central_Server -R 2001:localhost:22 -L 8086:localhost:8086 -p22 -N -v -i /home/pi/.ssh/id_rsa(the location of your private key on the raspberry pi) -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no
+  [Service]
+  Type=simple
+  ExecStart=/usr/bin/ssh -l Username_On_Central_Server Public_IP_Central_Server -R 2001:localhost:22 -L 8086:localhost:8086 -p22 -N -v -i /home/pi/.ssh/id_rsa(the location of   your private key on the raspberry pi) -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no
 
-[Install]
-WantedBy=multi-user.target
+  [Install]
+  WantedBy=multi-user.target
 
   **note: please be carefully of the username, IP of the central server. Also the port number needs to be unique, e.g. 2001**
 
