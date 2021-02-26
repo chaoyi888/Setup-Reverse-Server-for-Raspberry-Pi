@@ -25,8 +25,8 @@ The followin steps are to create a relay service from decentral units to one cen
 ## setup service file for callback service to central service at Raspberry Pi
   1. create service file `/etc/systemd/system/ssh-relay.service` with following content (but change the port number 2200 to a unique port):
 
-  [Unit]
-  Description=Enable relay from central location
+  [Unit]  
+  Description=Enable relay from central location  
   After=network-online.target
   Wants=network-online.target
 
