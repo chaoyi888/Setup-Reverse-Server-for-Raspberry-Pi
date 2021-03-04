@@ -75,8 +75,11 @@ also please change the username to an appropiate user.
   3. In my case, the SSH tunnel is never hanging there anymore. The reverse SSH connection from central server (AWS server) to the remote Raspberry Pi is always alive. 
 
 ## For the remote connection, there is always some unexpected behavior happening. So it's better that we define a crontab job to reboot the Pi every day at a certain time. 
-## I have added the following lines in the /etc/crontab. 
+## I have used the combinations below:
+    1.  Add the following line in the /etc/crontab to schedule reboot at certain moment of the day. 
     00 00 * * * root reboot                     #Every day at 00:00, Pi will be reboot
-    03 00 * * * root systemctl daemon-reload    #Every day at 00:03. Daemon will be reloaded
-    04 00 * * * root systemctl enable ssh-relay #Every day at 00:04, sudo systemctl enable ssh-relay will be executed
-    05 00 * * * root systemctl start ssh-relay  #Every day at 00:05, sudo systemctl start ssh-relay will be excuted
+    2.  Add the following lines by using 'Sudo crontab -e' so that the following 4 commands will be executed after 5 minutes at every reboot.
+      @reboot sleep 120 && sudo /usr/sbin/route del default dev eth0
+      @reboot sleep 130 && sudo /usr/bin/systemctl daemon-reload
+      @reboot sleep 140 && sudo /usr/bin/systemctl enable ssh-relay
+      @reboot sleep 150 && sudo /usr/bin/systemctl start ssh-relay  
